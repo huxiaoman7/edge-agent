@@ -1,0 +1,383 @@
+{
+  "meta": {
+    "title": "昇腾 310 系列大模型与推理栈知识库",
+    "mindie_list_url": "https://gitcode.com/Ascend/MindIE-LLM/blob/master/docs/zh/user_guide/model_support_list.md",
+    "updated": "2026-04-23",
+    "schema_version": "3.0"
+  },
+  "legend": {
+    "hardware_alias": "Atlas 300I Duo 常用于表示 310 系列双芯推理形态；与 Atlas 800I A2/A3 区分。",
+    "support_badge": "绿点=充分验证，橙点=仅功能支持。",
+    "stack": "MindIE-LLM 常与 ATB Models、mindie_llm、atbgraph 配合。"
+  },
+  "mindie": {
+    "text_models_300i_duo": [
+      {
+        "series": "DeepSeek",
+        "model": "DeepSeek-R1-Distill-Llama-8B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2/4 卡（推荐 1 卡）",
+        "support_level": "full"
+      },
+      {
+        "series": "DeepSeek",
+        "model": "DeepSeek-R1-Distill-Qwen-1.5B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2 卡（推荐 1 卡）",
+        "support_level": "full"
+      },
+      {
+        "series": "DeepSeek",
+        "model": "DeepSeek-R1-Distill-Qwen-7B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2 卡（推荐 1 卡）",
+        "support_level": "full"
+      },
+      {
+        "series": "DeepSeek",
+        "model": "DeepSeek-R1-Distill-Qwen-14B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 2/4 卡（推荐 2 卡）",
+        "support_level": "full"
+      },
+      {
+        "series": "DeepSeek",
+        "model": "DeepSeek-R1-Distill-Qwen-32B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2/4 卡（推荐 2 卡）",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen2",
+        "model": "Qwen2-1.5B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen2",
+        "model": "Qwen2-7B-Instruct",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen2",
+        "model": "Qwen2-72B-Instruct",
+        "context_length": "128k",
+        "quantization": ["W8A8", "W8A16"],
+        "hardware": "Atlas 300I Duo 1/2/4 卡（推荐 4 卡）",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen2.5",
+        "model": "Qwen2.5-0.5B-Instruct",
+        "context_length": "128k",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1 卡",
+        "support_level": "mixed"
+      },
+      {
+        "series": "Qwen2.5",
+        "model": "Qwen2.5-1.5B-Instruct",
+        "context_length": "128k",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1/2 卡",
+        "support_level": "mixed"
+      },
+      {
+        "series": "Qwen2.5",
+        "model": "Qwen2.5-3B-Instruct",
+        "context_length": "128k",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1/2/4 卡",
+        "support_level": "mixed"
+      },
+      {
+        "series": "Qwen2.5",
+        "model": "Qwen2.5-7B-Instruct",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen2.5",
+        "model": "Qwen2.5-14B-Instruct",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2/4 卡（推荐 2 卡）",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3",
+        "model": "Qwen3-0.6B",
+        "context_length": "32k",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3",
+        "model": "Qwen3-1.7B",
+        "context_length": "32k",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3",
+        "model": "Qwen3-4B",
+        "context_length": "128k",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3",
+        "model": "Qwen3-8B",
+        "context_length": "128k",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3",
+        "model": "Qwen3-14B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3",
+        "model": "Qwen3-32B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 2 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3",
+        "model": "Qwen3-30B-A3B-Instruct-2507",
+        "context_length": "128k",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 2 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Llama",
+        "model": "Llama3-8B",
+        "context_length": "8k",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1/2/4 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Llama",
+        "model": "Llama3.1-8B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2/4 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "GLM",
+        "model": "ChatGLM2-6B",
+        "context_length": "32k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2/4 卡",
+        "support_level": "mixed"
+      },
+      {
+        "series": "GLM",
+        "model": "ChatGLM3-6B",
+        "context_length": "8k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "GLM",
+        "model": "GLM4-9B",
+        "context_length": "128k",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Bloom",
+        "model": "Bloom-7B",
+        "context_length": "4096",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1/2/4 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Baichuan",
+        "model": "Baichuan2-7B",
+        "context_length": "4096",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Baichuan",
+        "model": "Baichuan2-13B",
+        "context_length": "4096",
+        "quantization": ["W8A8", "W8A16"],
+        "hardware": "Atlas 300I Duo 1/2 卡",
+        "support_level": "mixed"
+      }
+    ],
+    "multimodal_models_300i_duo": [
+      {
+        "series": "Qwen2.5-VL",
+        "model": "Qwen2.5-VL-3B-Instruct",
+        "quantization": ["W8A8(部分)"],
+        "hardware": "Atlas 300I Duo 含卡数/推荐",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen2.5-VL",
+        "model": "Qwen2.5-VL-7B-Instruct",
+        "quantization": ["W8A8(部分)"],
+        "hardware": "Atlas 300I Duo 含卡数/推荐",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen2.5-VL",
+        "model": "Qwen2.5-VL-32B-Instruct",
+        "quantization": ["W8A8(部分)"],
+        "hardware": "Atlas 300I Duo 2/4 卡（推荐 2 卡）",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen2.5-VL",
+        "model": "Qwen2.5-VL-72B-Instruct",
+        "quantization": ["W8A8(部分)"],
+        "hardware": "Atlas 300I Duo 2/4 卡（推荐 4 卡）",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3-VL",
+        "model": "Qwen3-VL-2B-Instruct",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1/2/4/8 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3-VL",
+        "model": "Qwen3-VL-4B-Instruct",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1/2/4/8 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3-VL",
+        "model": "Qwen3-VL-8B-Instruct",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 1/2/4/8 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3-VL",
+        "model": "Qwen3-VL-32B-Instruct",
+        "quantization": ["W8A8"],
+        "hardware": "Atlas 300I Duo 2/4/8 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "Qwen3-VL",
+        "model": "Qwen3-VL-30B-A3B-Instruct",
+        "quantization": ["W8A8(部分)"],
+        "hardware": "Atlas 300I Duo 2/4 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "GLM",
+        "model": "GLM-4.1V-9B-Thinking",
+        "quantization": ["见官方表"],
+        "hardware": "Atlas 300I Duo 1 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "MiniCPM",
+        "model": "MiniCPM-V-2.6",
+        "quantization": ["none"],
+        "hardware": "Atlas 300I Duo 1 卡",
+        "support_level": "full"
+      },
+      {
+        "series": "LLaVA/Yi-VL",
+        "model": "LLaVA-1.5/1.6 与 Yi-VL 部分型号",
+        "quantization": ["见官方表"],
+        "hardware": "Atlas 300I Duo（部分仅功能支持）",
+        "support_level": "mixed"
+      }
+    ],
+    "unsupported_examples_300i_duo": [
+      "ERNIE-4.5-300B",
+      "Kimi-K2 系列",
+      "GLM-4.5",
+      "DeepSeek 多款超大 MoE/236B+"
+    ]
+  },
+  "vllm_310p_poc": {
+    "description": "vLLM Ascend 310P POC 版本（与 MindIE 路线独立）",
+    "models": [
+      {
+        "model": "Qwen3-32B",
+        "type": "LLM",
+        "precision": ["float", "quantized"]
+      },
+      {
+        "model": "Qwen3-VL-4B",
+        "type": "MLLM",
+        "precision": ["float", "quantized"]
+      },
+      {
+        "model": "Qwen3-VL-8B",
+        "type": "MLLM",
+        "precision": ["float", "quantized"]
+      },
+      {
+        "model": "Qwen3-30B-A3B",
+        "type": "MoE",
+        "precision": ["float", "quantized"]
+      },
+      {
+        "model": "Qwen3.5-35B-A3B",
+        "type": "MoE",
+        "precision": ["float", "quantized"]
+      },
+      {
+        "model": "Qwen3.5-4B",
+        "type": "LLM",
+        "precision": ["float", "quantized"]
+      }
+    ],
+    "capabilities": [
+      "full decode only 图模式",
+      "W8A8SC 量化",
+      "TP 并行"
+    ]
+  },
+  "faq": [
+    {
+      "q": "MindIE 和 vLLM 在 310 上有什么区别？",
+      "a": "MindIE 以 Atlas 300I Duo 等硬件列描述支持矩阵；vLLM 310P POC 聚焦 310P 特性（decode-only、W8A8SC、TP）。两者需分开评估。"
+    },
+    {
+      "q": "如何查某模型是否支持 300I Duo？",
+      "a": "到 model_support_list.md 的“硬件规格”列检索 Atlas 300I Duo，并确认是否标注“不支持”。"
+    }
+  ]
+}

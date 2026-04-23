@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>喵酱·你的昇腾310小助理</title>
+    <link rel="stylesheet" href="/web/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="cat-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" focusable="false" aria-hidden="true">
+              <rect class="cat-bg" x="6" y="6" width="52" height="52" rx="14" />
+              <g class="cat-bounce">
+                <path class="cat-ear cat-ear-left" d="M20 26 L23 16 L30 24 Z" />
+                <path class="cat-ear cat-ear-right" d="M44 26 L41 16 L34 24 Z" />
+                <ellipse class="cat-head" cx="32" cy="36" rx="15.5" ry="13.5" />
+                <ellipse class="cat-eye cat-eye-left" cx="27.2" cy="35.8" rx="2.2" ry="3" />
+                <ellipse class="cat-eye cat-eye-right" cx="36.8" cy="35.8" rx="2.2" ry="3" />
+                <circle class="cat-eye-highlight" cx="27.8" cy="34.8" r="0.6" />
+                <circle class="cat-eye-highlight" cx="37.4" cy="34.8" r="0.6" />
+                <path class="cat-nose" d="M32 37.6 L30.2 40.1 H33.8 Z" />
+                <path class="cat-mouth" d="M32 40.1 C30.8 42.1 28.9 42.4 27.4 41.1" />
+                <path class="cat-mouth" d="M32 40.1 C33.2 42.1 35.1 42.4 36.6 41.1" />
+                <path class="cat-mouth-smile" d="M27.8 40.8 C29.5 43.1 34.5 43.1 36.2 40.8" />
+                <ellipse class="cat-mouth-open" cx="32" cy="41.2" rx="2.4" ry="1.9" />
+                <ellipse class="cat-tongue" cx="32" cy="41.95" rx="1.25" ry="0.85" />
+                <circle class="cat-blush" cx="22.4" cy="39.4" r="2.3" />
+                <circle class="cat-blush" cx="41.6" cy="39.4" r="2.3" />
+              </g>
+            </svg>
+          </div>
+          <div>
+            <h1>喵酱</h1>
+          </div>
+        </div>
+        <button id="newSessionBtn" class="btn btn-primary">+ 新建会话</button>
+        <div id="sessionList" class="session-list"></div>
+      </aside>
+
+      <main class="main">
+        <header class="hero">
+          <h2>
+            <span class="title-with-cat">
+              <span class="title-cat" aria-hidden="true">
+                <svg viewBox="0 0 90 64" focusable="false" aria-hidden="true">
+                  <path class="title-tail" d="M62 41 C77 37, 85 28, 79 19 C76 15, 68 16, 68 22 C68 28, 74 29, 76 25" />
+                  <ellipse class="title-body" cx="48" cy="42.5" rx="18.2" ry="12.8" />
+                  <ellipse class="title-belly" cx="48.5" cy="45.2" rx="9.4" ry="6.6" />
+                  <g class="title-head-group">
+                    <ellipse class="title-head" cx="32.5" cy="27.5" rx="12.8" ry="11.4" />
+                    <path class="title-ear" d="M22.6 19.8 L26.7 10.8 L30.8 19.5 Z" />
+                    <path class="title-ear" d="M34.2 19.5 L38.3 10.8 L42.4 19.8 Z" />
+                    <path class="title-ear-inner" d="M24.8 18.9 L26.8 14.6 L28.8 18.8 Z" />
+                    <path class="title-ear-inner" d="M36.2 18.8 L38.2 14.6 L40.2 18.9 Z" />
+                    <ellipse class="title-eye" cx="28.2" cy="28.4" rx="2.05" ry="2.85" />
+                    <ellipse class="title-eye" cx="36.8" cy="28.4" rx="2.05" ry="2.85" />
+                    <circle class="title-eye-highlight" cx="28.9" cy="27.3" r="0.5" />
+                    <circle class="title-eye-highlight" cx="37.5" cy="27.3" r="0.5" />
+                    <path class="title-nose" d="M32.5 31.3 L30.8 33.5 H34.2 Z" />
+                    <path class="title-mouth" d="M32.5 33.8 C31.4 35.1 29.9 35.3 28.8 34.6" />
+                    <path class="title-mouth" d="M32.5 33.8 C33.6 35.1 35.1 35.3 36.2 34.6" />
+                    <ellipse class="title-cheek" cx="24.2" cy="32.5" rx="2.1" ry="1.3" />
+                    <ellipse class="title-cheek" cx="40.8" cy="32.5" rx="2.1" ry="1.3" />
+                  </g>
+                  <path class="title-dust title-dust-left" d="M39.4 53.2 L35.8 54.6" />
+                  <path class="title-dust title-dust-right" d="M58.8 53.1 L62.4 54.5" />
+                  <path class="title-paw title-paw-left" d="M42.2 50.1 C43.4 52.1 46.4 52.2 47.6 50 C46.3 48.7 43.5 48.7 42.2 50.1 Z" />
+                  <path class="title-paw title-paw-right" d="M52.4 50.1 C53.6 52.1 56.6 52.2 57.8 50 C56.5 48.7 53.7 48.7 52.4 50.1 Z" />
+                </svg>
+              </span>
+              喵酱·你的昇腾310小助理
+            </span>
+            <span class="paw" aria-hidden="true">🐾</span>
+          </h2>
+        </header>
+
+        <section id="chat" class="chat"></section>
+
+        <section class="composer">
+          <textarea id="input" placeholder="直接说目标：我要把 310P 问答服务上线，给我从模型选型到部署参数的完整方案"></textarea>
+          <div class="composer-actions">
+            <button id="clearBtn" class="btn btn-ghost" type="button">清空对话</button>
+            <button id="sendBtn" class="btn btn-primary" type="button">发送</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="messageTpl">
+      <div class="message">
+        <div class="role"></div>
+        <div class="content"></div>
+      </div>
+    </template>
+
+    <script src="/web/main.js"></script>
+  </body>
+</html>

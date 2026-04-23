@@ -1,0 +1,10 @@
+.venv
+.git
+**/__pycache__
+**/*.pyc
+.DS_Store
+.gradio
+.env
+*.log
+.pytest_cache
+.mypy_cache

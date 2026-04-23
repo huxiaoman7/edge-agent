@@ -57,6 +57,49 @@ class AscendAgent:
         recent = " ".join(recent_user[-2:])
         return f"{recent} {message}".strip()
 
+    def _extract_model_candidates(self, text: str) -> list[str]:
+        blocked = {
+            "310",
+            "310p",
+            "300i",
+            "duo",
+            "atlas",
+            "w8a8",
+            "w4a8",
+            "w8a16",
+            "a2",
+            "a3",
+        }
+        candidates: list[str] = []
+        for token in re.findall(r"[A-Za-z0-9.\-]+", text):
+            lower = token.lower()
+            if lower in blocked:
+                continue
+            if any(ch.isdigit() for ch in token) and len(token) >= 4:
+                candidates.append(token)
+        return candidates
+
+    def _should_use_history_for_retrieval(self, message: str, intent: str) -> bool:
+        """模型清单类问题优先按当前轮回答，避免被历史型号串话。"""
+        msg = message.strip()
+        lower_msg = msg.lower()
+        has_explicit_model = bool(self._extract_model_candidates(msg))
+        has_ref = any(k in msg for k in ("这个", "那个", "它", "继续", "刚才", "上面"))
+        if intent == "model":
+            # 显式型号优先当前轮；代词追问需要继承上下文
+            if has_explicit_model:
+                return False
+            if has_ref:
+                return True
+            if "哪些模型" in msg or "支持哪些" in msg:
+                return False
+            return False
+        if len(msg) <= 6 and has_ref:
+            return True
+        if lower_msg in {"继续", "展开说说", "细说"}:
+            return True
+        return True
+
     def _format_context(self, evidences: list[Evidence]) -> str:
         lines = []
         for idx, ev in enumerate(evidences[:2], start=1):
@@ -95,7 +138,7 @@ class AscendAgent:
 
         url = base_url.rstrip("/") + "/chat/completions"
         system_prompt = (
-            "你是喵酱，昇腾310芯片智能小助手。"
+            "你是喵酱，昇腾310小助理。"
             "仅根据给定上下文回答，不编造。"
             "输出中文，要求自然、精准、直接。"
             "禁止使用Markdown符号（如 #、*、`、- 列表）。"
@@ -224,11 +267,7 @@ class AscendAgent:
             mm_models = mindie.get("multimodal_models_300i_duo", [])
             vllm_models = kb.get("vllm_310p_poc", {}).get("models", [])
             # 精确型号问法（如 Qwen3-VL-8B 支持吗）优先返回定点答案
-            candidates = [
-                t
-                for t in re.findall(r"[A-Za-z0-9.\-]+", query)
-                if any(ch.isdigit() for ch in t) and len(t) >= 4 and t.lower() not in {"310", "310p"}
-            ]
+            candidates = self._extract_model_candidates(query)
             candidate = max(candidates, key=len) if candidates else ""
             c = candidate.lower()
             mt = [x for x in text_models if c and c in x.get("model", "").lower()]
@@ -358,15 +397,47 @@ class AscendAgent:
             cleaned.append(plain)
         return "\n".join(cleaned).strip()
 
+    def _is_smalltalk(self, message: str) -> bool:
+        quick = message.strip().lower()
+        if not quick:
+            return False
+        greeting_tokens = {
+            "你好",
+            "您好",
+            "hi",
+            "hello",
+            "哈喽",
+            "哈啰",
+            "在吗",
+            "在嗎",
+            "嗨",
+            "早上好",
+            "中午好",
+            "下午好",
+            "晚上好",
+        }
+        # 兼容“你好啊/你好呀/hi喵酱”等非精确输入
+        if any(token in quick for token in greeting_tokens):
+            return True
+        if quick in {"谢谢", "谢了", "thx", "thanks"}:
+            return True
+        return False
+
     def chat(self, message: str, history: list[dict], cfg: AgentConfig | None = None) -> AgentResult:
         cfg = cfg or AgentConfig()
         quick = message.strip()
-        quick_l = quick.lower()
         identity_tokens = ("你是谁", "你是誰", "你叫什么", "你叫啥", "你叫什麼", "介绍下你", "介紹下你")
-        greet_tokens = {"你好", "hi", "hello", "在吗", "在嗎", "嗨", "哈喽", "哈囉"}
-        if quick in greet_tokens or any(t in quick for t in identity_tokens) or quick_l in greet_tokens:
+        asks_identity = any(t in quick for t in identity_tokens)
+        if self._is_smalltalk(quick) or asks_identity:
+            quick_l = quick.lower()
+            if asks_identity:
+                answer = "我是喵酱，你的昇腾310小助理。很高兴认识你，我们一起把问题快速搞定。"
+            elif quick_l in {"谢谢", "谢了", "thx", "thanks"}:
+                answer = "不客气呀，随时喊我。想查310兼容模型或部署建议，我都可以马上帮你。"
+            else:
+                answer = "你好呀，我在这儿。你可以直接告诉我目标，我来帮你梳理310相关模型、部署和参数建议。"
             return AgentResult(
-                answer="我是喵酱，昇腾310芯片智能小助手",
+                answer=answer,
                 intent="general",
                 plan=["快速问候响应"],
                 evidences=[],
@@ -374,10 +445,15 @@ class AscendAgent:
                 used_remote=False,
                 source_url="",
             )
-        query = self._contextual_query(message, history)
+        current_query = message.strip()
+        intent = self._intent(current_query)
+        query = (
+            self._contextual_query(message, history)
+            if self._should_use_history_for_retrieval(message, intent)
+            else current_query
+        )
         kb, evidences = retrieve_evidence(query, self.kb_path, top_n=max(3, cfg.top_k))
-        intent = self._intent(query)
-        plan = self._plan(query, intent)
+        plan = self._plan(current_query, intent)
         context = self._format_context(evidences)
         # 模型支持类问题一律走本地结构化模板，避免远端风格漂移
         force_structured_model_answer = intent == "model"
@@ -385,7 +461,7 @@ class AscendAgent:
         if force_structured_model_answer:
             remote = None
         used_remote = bool(remote)
-        answer = remote or self._fallback(kb, evidences, intent, cfg.mode, query)
+        answer = remote or self._fallback(kb, evidences, intent, cfg.mode, current_query)
         answer = self._clean_answer(answer)
         review_notes = self._review(answer, evidences)
         source_url = kb.get("meta", {}).get("mindie_list_url", "")

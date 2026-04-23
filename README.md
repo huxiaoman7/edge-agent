@@ -6,7 +6,7 @@
 
 - 访问地址：<https://edge-agent.zeabur.app/>
 
-![喵酱在线版预览](https://image.thum.io/get/width/1200/crop/700/noanimate/https://edge-agent.zeabur.app/)
+![喵酱在线版预览](docs/images/preview.png)
 
 ## 你可以用它做什么
 

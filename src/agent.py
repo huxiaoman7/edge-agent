@@ -36,15 +36,22 @@ class AscendAgent:
     def __init__(self, kb_path: Path) -> None:
         self.kb_path = kb_path
 
+    def _has_quant_terms(self, query: str) -> bool:
+        q = query.lower()
+        return any(x in q for x in ["量化", "w8a8", "w4a8", "w8a16", "w8a8sc", "精度"])
+
     def _intent(self, query: str) -> str:
         q = query.lower()
-        if any(x in q for x in ["支持", "模型", "qwen", "deepseek", "glm", "llama"]):
-            return "model"
-        if any(x in q for x in ["区别", "差异", "比较", "对比", "mindie", "vllm"]):
+        asks_compare = any(x in q for x in ["区别", "差异", "比较", "对比"]) or ("mindie" in q and "vllm" in q)
+        if asks_compare:
             return "compare"
         if any(x in q for x in ["部署", "上线", "docker", "spaces", "启动"]):
             return "deploy"
-        if any(x in q for x in ["量化", "w8a8", "w4a8", "w8a16", "精度"]):
+        if self._has_quant_terms(query) and not self._extract_model_candidates(query):
+            return "quant"
+        if any(x in q for x in ["支持", "模型", "qwen", "deepseek", "glm", "llama"]):
+            return "model"
+        if self._has_quant_terms(query):
             return "quant"
         return "general"
 
@@ -253,6 +260,21 @@ class AscendAgent:
             )
 
         if intent == "quant":
+            q_l = query.lower()
+            ask_vllm = ("vllm" in q_l) or ("310p" in q_l)
+            if ask_vllm:
+                v_models = kb.get("vllm_310p_poc", {}).get("models", [])
+                supported = [
+                    x.get("model", "")
+                    for x in v_models
+                    if "quantized" in [p.lower() for p in x.get("precision", [])]
+                ]
+                preview = "、".join([x for x in supported[:4] if x]) or "当前知识库未覆盖具体型号"
+                return (
+                    "结论：vLLM 310P POC 支持量化，能力口径是 W8A8SC。\n"
+                    f"可用模型示例：{preview}。\n"
+                    "如果你给我一个具体模型名，我直接告诉你是否支持量化与推荐配置。"
+                )
             quant_line = first_match(("W8A8", "W8A8SC", "W4A8", "量化"))
             return (
                 "量化这条路是对的，但要分栈验证，别直接互相套结论。\n"
@@ -266,6 +288,22 @@ class AscendAgent:
             text_models = mindie.get("text_models_300i_duo", [])
             mm_models = mindie.get("multimodal_models_300i_duo", [])
             vllm_models = kb.get("vllm_310p_poc", {}).get("models", [])
+            q_l = query.lower()
+            # 量化能力的定点问法，优先短答，不要每次回全量大表
+            ask_quant = self._has_quant_terms(query)
+            ask_vllm = ("vllm" in q_l) or ("310p" in q_l)
+            if ask_quant and ask_vllm:
+                support_models = [
+                    x.get("model", "")
+                    for x in vllm_models
+                    if "quantized" in [p.lower() for p in x.get("precision", [])]
+                ]
+                preview = "、".join(support_models[:4]) if support_models else "当前知识库未覆盖具体型号"
+                return (
+                    "结论：支持，但按 vLLM 310P POC 口径表述为 W8A8SC 量化能力。\n"
+                    f"可用模型示例：{preview}。\n"
+                    "如果你给我目标模型名，我可以直接告诉你是否命中，并给推荐参数。"
+                )
             # 精确型号问法（如 Qwen3-VL-8B 支持吗）优先返回定点答案
             candidates = self._extract_model_candidates(query)
             candidate = max(candidates, key=len) if candidates else ""
@@ -296,9 +334,11 @@ class AscendAgent:
                     + "\n如果你愿意，我下一步可以直接给你这款模型在 300I Duo 和 310P 上的部署参数建议。"
                 )
 
-            q_l = query.lower()
             ask_300i = ("300i" in q_l) or ("mindie" in q_l)
-            only_vllm = any(k in q_l for k in ["只看vllm", "仅vllm", "only vllm", "只看 310p", "仅看310p"])
+            broad_listing = any(k in q_l for k in ["哪些", "清单", "列表", "全量", "全部", "汇总"])
+            only_vllm = any(k in q_l for k in ["只看vllm", "仅vllm", "only vllm", "只看 310p", "仅看310p"]) or (
+                ("vllm" in q_l or "310p" in q_l) and "mindie" not in q_l and broad_listing
+            )
             if only_vllm:
                 capabilities = "、".join(kb.get("vllm_310p_poc", {}).get("capabilities", []))
                 v_rows = []
@@ -314,6 +354,23 @@ class AscendAgent:
                     + ("\n".join(v_rows) if v_rows else "| 当前知识库未覆盖 | - | - | - |")
                     + "\n如果你想切回全量（MindIE + vLLM）视图，直接说“给我全量”就行。"
                 )
+            if not broad_listing:
+                if ask_300i:
+                    sample = [x.get("model", "") for x in text_models[:3]]
+                    joined = "、".join([x for x in sample if x]) or "当前知识库未覆盖"
+                    return (
+                        "我先按 MindIE/300I Duo 给你短答：支持范围以官方清单为准。\n"
+                        f"示例模型：{joined}。\n"
+                        "如果你要完整表，我可以下一条直接展开。"
+                    )
+                if ask_vllm:
+                    sample = [x.get("model", "") for x in vllm_models[:4]]
+                    joined = "、".join([x for x in sample if x]) or "当前知识库未覆盖"
+                    return (
+                        "我先按 vLLM 310P 给你短答：支持模型在 POC 清单内。\n"
+                        f"示例模型：{joined}。\n"
+                        "你点一个具体模型名，我可以直接回你是否支持和精度选项。"
+                    )
 
             rows = []
             # MindIE 文本
